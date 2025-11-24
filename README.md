@@ -2,151 +2,166 @@
 
 ## 🎯 Problem Statement
 
-Banks process millions of credit card transactions every day.  
-Only a tiny percentage are fraudulent, but they cause huge financial loss and break customer trust.
+Banks process millions of credit card transactions every day — while only a tiny percentage are fraudulent, they result in significant financial loss and broken customer trust.
 
 Fraud analysts need:
-
 - A **fast way to flag high-risk transactions**
-- A **risk score** instead of a simple yes/no
-- Clear **KPIs and dashboards** for monitoring fraud patterns
+- A **risk score instead of binary labeling**
+- Clear **KPIs and dashboard insights** to detect patterns
 
-This project builds an **end-to-end fraud risk pipeline** using Python, SQL, Machine Learning and Power BI.
+This project builds an **end-to-end fraud monitoring pipeline** using Python, SQL, Machine Learning, and Power BI.
 
 ---
 
 ## 📌 Project Overview
 
 **Goal:**  
-Score every transaction with a fraud **risk score (0–1)**, bucket it into **High / Medium / Low**, and monitor fraud using an interactive Power BI dashboard.
+Assign each transaction a fraud **risk score (0–1)**, bucket it into **High / Medium / Low**, and monitor patterns in an interactive dashboard.
 
-**What I built:**
-
-- **Data pipeline** to clean ~1.3M credit card transactions
-- **Feature store in SQLite** (`model_features` view)
-- **Logistic Regression model** to predict fraud probability
-- **Risk buckets**:
-  - High: risk_score > 0.40  
-  - Medium: 0.15 < risk_score ≤ 0.40  
-  - Low: risk_score ≤ 0.15
-- **Power BI dashboard** to monitor:
-  - Overall fraud rate
-  - High-risk volumes
-  - Top risky merchants & categories
-  - Fraud pattern by state, gender, time, and distance
+**What was built:**
+- ✔️ Full end-to-end dataset cleaning (~1.3M rows)
+- ✔️ SQL feature store using **SQLite + SQLAlchemy**
+- ✔️ ML model to calculate fraud probability
+- ✔️ Categorization into risk buckets
+- ✔️ Power BI dashboard for monitoring fraud behavior
 
 ---
 
 ## 📂 Dataset Details
 
-- **Source:** Synthetic credit card transactions (Kaggle-style dataset)
-- **Rows used:** ~1,296,675 transactions
-- **Target column:** `is_fraud` (0 = genuine, 1 = fraud)
+- **Source:** Synthetic credit card transaction dataset
+- **Total Rows Used:** ~1,296,675  
+- **Target Variable:** `is_fraud` (0 = genuine, 1 = fraud)
 
-**Key Columns Used**
-
+**Key Features:**
 - Transaction: `amt`, `unix_time`
-- Customer: `age`, `gender`, `state`, `city_pop`
+- Customer: `gender`, `age`, `state`, `city_pop`
 - Merchant: `merchant`, `category`, `merch_lat`, `merch_long`
-- Location: `lat`, `long`
 - Engineered:
-  - `amt_log` (log of amount)
-  - `distance_km` (customer → merchant distance using Haversine)
-  - `time_of_day` (Morning / Afternoon / Evening / Night)
+  - `amt_log` → log transformed amount  
+  - `distance_km` → Haversine distance  
+  - `time_of_day` → Morning / Afternoon / Evening / Night  
   - `risk_score`, `risk_bucket`
 
-> Note: For GitHub, I only uploaded a **sample file**:  
-> `fraud_full_predictions_sample.csv` (subset of the full scored data).
+> For GitHub size constraints, I included **only a sample dataset**:  
+> `fraud_sample.csv`
 
 ---
 
 ## 🛠 Tech Stack
 
-| Area          | Tools & Libraries                         |
-|---------------|-------------------------------------------|
-| Data Cleaning | Python (Pandas, NumPy)                    |
-| Feature Store | SQLite + SQLAlchemy                       |
-| ML Modeling   | scikit-learn (LogisticRegression)         |
-| Evaluation    | precision, recall, F1, ROC-AUC, PR-AUC    |
-| Dashboard     | Power BI                                  |
-| Versioning    | Git & GitHub                              |
+| Category | Tools |
+|---------|-------|
+| Data Processing | Python, Pandas, NumPy |
+| Feature Store | SQLite, SQLAlchemy |
+| ML Model | Logistic Regression (scikit-learn) |
+| Evaluation | Recall, Precision, F1, ROC-AUC, PR-AUC |
+| Dashboard | Power BI |
+| Version Control | Git & GitHub |
 
 ---
 
-## 🔍 Modeling Approach
+## 🚧 Modeling Workflow
 
-### 1️⃣ Data Preparation
+### **1️⃣ Data Preparation**
+- Loaded raw data in **chunks** due to file size
+- Cleaned and transformed into parquet format
+- Created a reusable SQL feature table
 
-- Loaded raw CSV (`fraudTrain.csv`) in **chunks** to handle size
-- Cleaned and transformed into `train_clean_full.parquet`
-- Created a SQL feature table **`model_features`** with:
-  - `amt`, `category`, `merchant`, `gender`, `state`, `city_pop`
-  - `age`, `unix_time`, `hour`, `month`, `is_weekend`
-  - `lat`, `long`, `merch_lat`, `merch_long`
-  - `is_fraud` (label)
+---
 
-### 2️⃣ Feature Engineering
+### **2️⃣ Feature Engineering**
 
-In the notebook (`CREDITCARD_JUPYTER.ipynb`):
+Implemented in: `CreditCardFraud_EDA_and_Model.ipynb`
 
-- `amt_log` = log-transform of amount
-- `distance_km` using Haversine formula
-- `time_of_day` from `hour`:
-  - Night / Morning / Afternoon / Evening
-- Encodings:
-  - **Frequency encoding** for `merchant`, `category`
-  - **Label encoding** for `gender`, `state`, `time_of_day`
-- Train / test split with **stratification on `is_fraud`**
+- Log transformation on skewed values (`amt_log`)
+- Haversine distance calculation (`distance_km`)
+- Time segmentation (`time_of_day`)
+- Encoding strategy:
+  - Frequency encoding → `merchant`, `category`
+  - Label encoding → `gender`, `state`, `time_of_day`
+- Stratified train-test split on `is_fraud`
 
-### 3️⃣ Model
+---
 
-Used a simple **Logistic Regression**:
+### **3️⃣ Machine Learning Model**
+
+Used a simple but explainable model:
 
 ```python
 model = LogisticRegression(
     class_weight="balanced",
     max_iter=300,
     n_jobs=-1
-) ```
+)
+### 🔍 Model Choice: Logistic Regression
 
+Logistic Regression was selected because:
 
-Reason for choice:
+- ✔️ Works well for **imbalanced tabular datasets**
+- ✔️ Produces **interpretable probability scores**
+- ✔️ Fast to train even on **large datasets (~1.3M rows)**
+- ✔️ Aligns with **real-world fraud risk scoring systems** used by banks
 
-Works well for imbalanced, tabular data
+---
 
-Fast to train on 1.3M+ rows
+### 📈 Model Performance (Test Set)
 
-Outputs probabilities → easy to convert to risk scores
+| Metric | Score |
+|--------|-------|
+| Precision | ~0.084 |
+| Recall | ~0.75 |
+| F1 Score | ~0.15 |
+| ROC-AUC | ~0.89 |
+| PR-AUC | ~0.20 |
 
-Easy to explain in interviews & to business users'''
+> The model is intentionally optimized for **high recall** to detect as many fraudulent transactions as possible — accepting more false positives to avoid missing true fraud cases.
 
-4️⃣ Metrics (on test set)
+---
 
-Precision: ~0.084
+## 📊 Power BI Dashboard
 
-Recall: ~0.75
+📁 File: `fraud_risk_dashboard.pbix`  
+🖼 Preview: `fraud_risk_dashboard.png`
 
-F1-score: ~0.15
+This dashboard uses the machine learning output (`risk_score`, `risk_bucket`) to monitor fraud behavior at scale.
 
-ROC-AUC: ~0.89
+---
 
-PR-AUC: ~0.20
+### ⭐ Key Metrics Displayed
 
-Given the dataset is highly imbalanced, the model is tuned to catch as many frauds as possible (high recall), accepting more false positives.
+- **Total Transactions**
+- **Total Fraud Transactions**
+- **Fraud Rate (%)**
+- **High-Risk Transaction Count**
+- **High-Risk Fraud Rate (%)**
 
-### 🎯 Power BI Dashboard
+---
 
-This dashboard uses the model predictions to monitor fraud risk in (near) real-time.  
-It helps identify suspicious activity, high-risk customer segments, and trends over time.
+### 📌 Dashboard Visuals
 
-#### 🔑 Key KPIs
+| Visual | Purpose |
+|--------|---------|
+| 📈 **Fraud Trend Over Time** | Identify spikes and seasonal patterns |
+| 🥧 **Risk Bucket Distribution** | Compare High vs Medium vs Low risk volumes |
+| 🏬 **Top High-Risk Merchants** | Detect repeat suspicious merchant activity |
+| 🛒 **Top High-Risk Categories** | See which purchase types drive fraud |
+| 🗺 **Fraud by State (Map)** | Identify geographical fraud hotspots |
+| 👩‍🦰 **Fraud Rate by Gender** | Analyze demographic behavior |
+| 📏 **Fraud vs Distance** | Explore correlation between risk and travel distance |
 
-| Metric                       | Description                                                     |
-|-----------------------------|-----------------------------------------------------------------|
-| Total Transactions          | Total number of processed credit card transactions              |
-| Total Frauds                | Count of confirmed fraudulent transactions                      |
-| Overall Fraud Rate (%)      | Fraud proportion across all transactions                        |
-| High-Risk Transaction Count | Transactions classified in the **"High"** risk bucket           |
-| High-Risk Fraud Rate (%)    | Fraud rate within the High-risk bucket                          |
+---
+
+### 🧠 Insights Summary
+
+Key findings from the dashboard:
+
+- 🔺 The **High-risk bucket contains most confirmed fraud cases**.
+- 📍 Fraud is more likely when:
+  - The **distance between customer and merchant increases**
+  - Transactions occur during specific **high-risk time periods**
+- 🏷 A **small group of merchants/categories are repeatedly linked** to fraud — indicating patterned behaviour.
+
+---
 
 
