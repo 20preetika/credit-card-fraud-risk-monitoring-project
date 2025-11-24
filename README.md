@@ -88,47 +88,36 @@ Implemented in: `CreditCardFraud_EDA_and_Model.ipynb`
 
 Used a simple but explainable model:
 
-```python
+
 model = LogisticRegression(
     class_weight="balanced",
     max_iter=300,
     n_jobs=-1
 )
-### 🔍 Model Choice: Logistic Regression
+---
+#### 🔍 Model Choice: Logistic Regression
 
 Logistic Regression was selected because:
 
-- ✔️ Works well for **imbalanced tabular datasets**
-- ✔️ Produces **interpretable probability scores**
-- ✔️ Fast to train even on **large datasets (~1.3M rows)**
-- ✔️ Aligns with **real-world fraud risk scoring systems** used by banks
+✔️ Works well for imbalanced tabular datasets
 
----
+✔️ Produces interpretable probability scores
 
-### 📈 Model Performance (Test Set)
+✔️ Fast to train on large datasets (~1.3M rows)
 
-| Metric | Score |
-|--------|-------|
-| Precision | ~0.084 |
-| Recall | ~0.75 |
-| F1 Score | ~0.15 |
-| ROC-AUC | ~0.89 |
-| PR-AUC | ~0.20 |
-
-> The model is intentionally optimized for **high recall** to detect as many fraudulent transactions as possible — accepting more false positives to avoid missing true fraud cases.
+✔️ Commonly used in real-world fraud scoring systems
 
 ---
 
 ## 📊 Power BI Dashboard
 
-📁 File: `fraud_risk_dashboard.pbix`  
 🖼 Preview: `fraud_risk_dashboard.png`
 
-This dashboard uses the machine learning output (`risk_score`, `risk_bucket`) to monitor fraud behavior at scale.
+This dashboard uses the model outputs (`risk_score`, `risk_bucket`) to monitor fraud behavior at scale.
 
 ---
 
-### ⭐ Key Metrics Displayed
+### ⭐ **Key Metrics Displayed**
 
 - **Total Transactions**
 - **Total Fraud Transactions**
@@ -138,30 +127,32 @@ This dashboard uses the machine learning output (`risk_score`, `risk_bucket`) to
 
 ---
 
-### 📌 Dashboard Visuals
+### 📌 **Dashboard Visuals**
 
-| Visual | Purpose |
-|--------|---------|
-| 📈 **Fraud Trend Over Time** | Identify spikes and seasonal patterns |
-| 🥧 **Risk Bucket Distribution** | Compare High vs Medium vs Low risk volumes |
-| 🏬 **Top High-Risk Merchants** | Detect repeat suspicious merchant activity |
-| 🛒 **Top High-Risk Categories** | See which purchase types drive fraud |
-| 🗺 **Fraud by State (Map)** | Identify geographical fraud hotspots |
-| 👩‍🦰 **Fraud Rate by Gender** | Analyze demographic behavior |
-| 📏 **Fraud vs Distance** | Explore correlation between risk and travel distance |
+| Visual Type | Purpose |
+|------------|---------|
+| 📈 Fraud Trend Over Time | Identify spikes and fraud patterns |
+| 🥧 Risk Bucket Distribution | Compare High vs Medium vs Low risk |
+| 🏬 Top High-Risk Merchants | Detect merchants repeatedly linked to fraud |
+| 🛒 Top High-Risk Categories | Understand risky purchase categories |
+| 🗺 Fraud by State (Map) | Identify geographic fraud hotspots |
+| 👩‍🦰 Fraud Rate by Gender | Understand demographic patterns |
+| 📏 Fraud vs Distance | Compare fraud likelihood with transaction distance |
+
+---
+
+### 🧠 **Insights Summary**
+
+- 🔺 The **High-risk bucket** contains the majority of confirmed fraud.
+- 📍 Fraud increases when:
+  - The **customer–merchant distance is high**
+  - The transaction occurs during **specific time windows**
+- 🏷 A small number of **merchants & categories repeatedly appear** in fraud — indicating repeat fraud patterns.
 
 ---
 
-### 🧠 Insights Summary
-
-Key findings from the dashboard:
-
-- 🔺 The **High-risk bucket contains most confirmed fraud cases**.
-- 📍 Fraud is more likely when:
-  - The **distance between customer and merchant increases**
-  - Transactions occur during specific **high-risk time periods**
-- 🏷 A **small group of merchants/categories are repeatedly linked** to fraud — indicating patterned behaviour.
-
----
+Preetika Aspiring Data Analyst |Power BI & Python 
+📧 Email: preetika0002@gmail.com 
+🔗 LinkedIn: https://www.linkedin.com/in/preetika20/
 
 
