@@ -107,7 +107,9 @@ model = LogisticRegression(
     class_weight="balanced",
     max_iter=300,
     n_jobs=-1
-)
+) ```
+
+
 Reason for choice:
 
 Works well for imbalanced, tabular data
@@ -116,7 +118,7 @@ Fast to train on 1.3M+ rows
 
 Outputs probabilities → easy to convert to risk scores
 
-Easy to explain in interviews & to business users
+Easy to explain in interviews & to business users'''
 
 4️⃣ Metrics (on test set)
 
@@ -132,58 +134,19 @@ PR-AUC: ~0.20
 
 Given the dataset is highly imbalanced, the model is tuned to catch as many frauds as possible (high recall), accepting more false positives.
 
-📊 Power BI Dashboard
+### 🎯 Power BI Dashboard
 
-Preview: fraud_risk_dashboard.png
+This dashboard uses the model predictions to monitor fraud risk in (near) real-time.  
+It helps identify suspicious activity, high-risk customer segments, and trends over time.
 
-Main KPIs
+#### 🔑 Key KPIs
 
-Total Transactions
+| Metric                       | Description                                                     |
+|-----------------------------|-----------------------------------------------------------------|
+| Total Transactions          | Total number of processed credit card transactions              |
+| Total Frauds                | Count of confirmed fraudulent transactions                      |
+| Overall Fraud Rate (%)      | Fraud proportion across all transactions                        |
+| High-Risk Transaction Count | Transactions classified in the **"High"** risk bucket           |
+| High-Risk Fraud Rate (%)    | Fraud rate within the High-risk bucket                          |
 
-Total Frauds
 
-Overall Fraud Rate (%)
-
-High Risk Transaction Count
-
-High Risk Fraud Rate (%)
-
-Key Visuals
-
-Fraud trend over time
-
-Risk bucket distribution (High / Medium / Low)
-
-Top merchants in High-risk bucket
-
-Top categories in High-risk bucket
-
-Fraud by State (map)
-
-Fraud rate by Gender
-
-Fraud vs transaction distance
-
-🧠 Insights Summary
-
-Some example insights from the model + dashboard:
-
-High-risk bucket contains a much higher fraud rate than Medium/Low.
-
-Certain merchants and categories are heavily over-represented in fraudulent transactions.
-
-Fraud tends to occur:
-
-At larger distances between customer and merchant
-
-During specific times of the day
-
-A very small % of transactions are fraud, but they cluster around specific patterns that the risk score highlights.
-
-👩‍💻 Author
-
-Preetika
-Aspiring Data Analyst | Power BI & Python
-
-📧 Email: preetika0002@gmail.com
-🔗 LinkedIn: https://www.linkedin.com/in/preetika20/
